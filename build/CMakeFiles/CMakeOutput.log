@@ -1,0 +1,343 @@
+The system is: Linux - 4.18.0-477.27.1.el8_8.x86_64 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/clang 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is Clang, found in "/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/3.20.2/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/clang++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is Clang, found in "/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/3.20.2/CompilerIdCXX/a.out"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_afccf/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_afccf.dir/build.make CMakeFiles/cmTC_afccf.dir/build
+gmake[1]: Entering directory '/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o
+/usr/bin/clang   -v -MD -MT CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c
+clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)
+Target: x86_64-redhat-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Selected multilib: .;@m64
+Found CUDA installation: /usr/local/cuda-11.4, version 11.4
+ (in-process)
+ "/usr/bin/clang-15" -cc1 -triple x86_64-redhat-linux-gnu -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -resource-dir /usr/lib64/clang/15.0.7 -dependency-file CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -sys-header-deps -internal-isystem /usr/lib64/clang/15.0.7/include -internal-isystem /usr/local/include -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdebug-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fgnuc-version=4.2.1 -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -x c /usr/share/cmake/Modules/CMakeCCompilerABI.c
+clang -cc1 version 15.0.7 based upon LLVM 15.0.7 default target x86_64-redhat-linux-gnu
+ignoring nonexistent directory "/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include"
+ignoring nonexistent directory "/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib64/clang/15.0.7/include
+ /usr/local/include
+ /usr/include
+End of search list.
+Linking C executable cmTC_afccf
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_afccf.dir/link.txt --verbose=1
+/usr/bin/clang  -v CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -o cmTC_afccf 
+clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)
+Target: x86_64-redhat-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Selected multilib: .;@m64
+Found CUDA installation: /usr/local/cuda-11.4, version 11.4
+ "/usr/bin/ld" --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_afccf /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12 -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o /lib/../lib64/crtn.o
+gmake[1]: Leaving directory '/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/lib64/clang/15.0.7/include]
+    add: [/usr/local/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/lib64/clang/15.0.7/include] ==> [/usr/lib64/clang/15.0.7/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/lib64/clang/15.0.7/include;/usr/local/include;/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_afccf/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_afccf.dir/build.make CMakeFiles/cmTC_afccf.dir/build]
+  ignore line: [gmake[1]: Entering directory '/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/clang   -v -MD -MT CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)]
+  ignore line: [Target: x86_64-redhat-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Candidate multilib: 32]
+  ignore line: [@m32]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [Found CUDA installation: /usr/local/cuda-11.4  version 11.4]
+  ignore line: [ (in-process)]
+  ignore line: [ "/usr/bin/clang-15" -cc1 -triple x86_64-redhat-linux-gnu -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -resource-dir /usr/lib64/clang/15.0.7 -dependency-file CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -sys-header-deps -internal-isystem /usr/lib64/clang/15.0.7/include -internal-isystem /usr/local/include -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdebug-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fgnuc-version=4.2.1 -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -x c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
+  ignore line: [clang -cc1 version 15.0.7 based upon LLVM 15.0.7 default target x86_64-redhat-linux-gnu]
+  ignore line: [ignoring nonexistent directory "/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include"]
+  ignore line: [ignoring nonexistent directory "/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/lib64/clang/15.0.7/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [Linking C executable cmTC_afccf]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_afccf.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/clang  -v CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -o cmTC_afccf ]
+  ignore line: [clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)]
+  ignore line: [Target: x86_64-redhat-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Candidate multilib: 32]
+  ignore line: [@m32]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [Found CUDA installation: /usr/local/cuda-11.4  version 11.4]
+  link line: [ "/usr/bin/ld" --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_afccf /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12 -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o /lib/../lib64/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_afccf] ==> ignore
+    arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+    arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+    arg [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o] ==> obj [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o]
+    arg [-L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12] ==> dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+    arg [-L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64] ==> dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/lib] ==> dir [/lib]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_afccf.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o] ==> obj [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o]
+    arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+  collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+  collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+  collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+  collapse library dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12] ==> [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  collapse library dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64] ==> [/opt/rh/gcc-toolset-12/root/usr/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/lib] ==> [/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit objs: [/lib64/crt1.o;/lib64/crti.o;/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o;/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o;/lib64/crtn.o]
+  implicit dirs: [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12;/opt/rh/gcc-toolset-12/root/usr/lib64;/lib64;/usr/lib64;/lib;/usr/lib]
+  implicit fwks: []
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_cc9ba/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_cc9ba.dir/build.make CMakeFiles/cmTC_cc9ba.dir/build
+gmake[1]: Entering directory '/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/clang++   -v -MD -MT CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -MF CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o.d -o CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)
+Target: x86_64-redhat-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Selected multilib: .;@m64
+Found CUDA installation: /usr/local/cuda-11.4, version 11.4
+ (in-process)
+ "/usr/bin/clang-15" -cc1 -triple x86_64-redhat-linux-gnu -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -resource-dir /usr/lib64/clang/15.0.7 -dependency-file CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o.d -MT CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12 -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/x86_64-redhat-linux -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/backward -internal-isystem /usr/lib64/clang/15.0.7/include -internal-isystem /usr/local/include -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdeprecated-macro -fdebug-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -x c++ /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+clang -cc1 version 15.0.7 based upon LLVM 15.0.7 default target x86_64-redhat-linux-gnu
+ignoring nonexistent directory "/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include"
+ignoring nonexistent directory "/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12
+ /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/x86_64-redhat-linux
+ /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/backward
+ /usr/lib64/clang/15.0.7/include
+ /usr/local/include
+ /usr/include
+End of search list.
+Linking CXX executable cmTC_cc9ba
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cc9ba.dir/link.txt --verbose=1
+/usr/bin/clang++  -v CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_cc9ba 
+clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)
+Target: x86_64-redhat-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Selected multilib: .;@m64
+Found CUDA installation: /usr/local/cuda-11.4, version 11.4
+ "/usr/bin/ld" --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_cc9ba /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12 -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o /lib/../lib64/crtn.o
+gmake[1]: Leaving directory '/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12]
+    add: [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/x86_64-redhat-linux]
+    add: [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/backward]
+    add: [/usr/lib64/clang/15.0.7/include]
+    add: [/usr/local/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12] ==> [/opt/rh/gcc-toolset-12/root/usr/include/c++/12]
+  collapse include dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/x86_64-redhat-linux] ==> [/opt/rh/gcc-toolset-12/root/usr/include/c++/12/x86_64-redhat-linux]
+  collapse include dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/backward] ==> [/opt/rh/gcc-toolset-12/root/usr/include/c++/12/backward]
+  collapse include dir [/usr/lib64/clang/15.0.7/include] ==> [/usr/lib64/clang/15.0.7/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/opt/rh/gcc-toolset-12/root/usr/include/c++/12;/opt/rh/gcc-toolset-12/root/usr/include/c++/12/x86_64-redhat-linux;/opt/rh/gcc-toolset-12/root/usr/include/c++/12/backward;/usr/lib64/clang/15.0.7/include;/usr/local/include;/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_cc9ba/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_cc9ba.dir/build.make CMakeFiles/cmTC_cc9ba.dir/build]
+  ignore line: [gmake[1]: Entering directory '/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/clang++   -v -MD -MT CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -MF CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o.d -o CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)]
+  ignore line: [Target: x86_64-redhat-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Candidate multilib: 32]
+  ignore line: [@m32]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [Found CUDA installation: /usr/local/cuda-11.4  version 11.4]
+  ignore line: [ (in-process)]
+  ignore line: [ "/usr/bin/clang-15" -cc1 -triple x86_64-redhat-linux-gnu -emit-obj -mrelax-all --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -resource-dir /usr/lib64/clang/15.0.7 -dependency-file CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o.d -MT CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12 -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/x86_64-redhat-linux -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/backward -internal-isystem /usr/lib64/clang/15.0.7/include -internal-isystem /usr/local/include -internal-isystem /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -fdeprecated-macro -fdebug-compilation-dir=/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/CMakeTmp -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -x c++ /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [clang -cc1 version 15.0.7 based upon LLVM 15.0.7 default target x86_64-redhat-linux-gnu]
+  ignore line: [ignoring nonexistent directory "/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../x86_64-redhat-linux/include"]
+  ignore line: [ignoring nonexistent directory "/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12]
+  ignore line: [ /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/x86_64-redhat-linux]
+  ignore line: [ /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../include/c++/12/backward]
+  ignore line: [ /usr/lib64/clang/15.0.7/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [Linking CXX executable cmTC_cc9ba]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cc9ba.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/clang++  -v CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_cc9ba ]
+  ignore line: [clang version 15.0.7 (Red Hat 15.0.7-1.module+el8.8.0+1144+0a4e73bd)]
+  ignore line: [Target: x86_64-redhat-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [InstalledDir: /usr/bin]
+  ignore line: [Found candidate GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Selected GCC installation: /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Candidate multilib: 32]
+  ignore line: [@m32]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  ignore line: [Found CUDA installation: /usr/local/cuda-11.4  version 11.4]
+  link line: [ "/usr/bin/ld" --build-id --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_cc9ba /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12 -L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o /lib/../lib64/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_cc9ba] ==> ignore
+    arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+    arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+    arg [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o] ==> obj [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o]
+    arg [-L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12] ==> dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+    arg [-L/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64] ==> dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/lib] ==> dir [/lib]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_cc9ba.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o] ==> obj [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o]
+    arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+  collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+  collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+  collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+  collapse library dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12] ==> [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12]
+  collapse library dir [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/../../../../lib64] ==> [/opt/rh/gcc-toolset-12/root/usr/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/lib] ==> [/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit objs: [/lib64/crt1.o;/lib64/crti.o;/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtbegin.o;/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12/crtend.o;/lib64/crtn.o]
+  implicit dirs: [/opt/rh/gcc-toolset-12/root/usr/lib/gcc/x86_64-redhat-linux/12;/opt/rh/gcc-toolset-12/root/usr/lib64;/lib64;/usr/lib64;/lib;/usr/lib]
+  implicit fwks: []
+
+
