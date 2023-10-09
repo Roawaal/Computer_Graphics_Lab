@@ -1,6 +1,7 @@
-#include <CanvasTriangle.h>
-#include <DrawingWindow.h>
-#include <Utils.h>
+#include </home/kz21093/Documents/RedNoise/libs/sdw/CanvasTriangle.h>
+#include </home/kz21093/Documents/RedNoise/libs/sdw/DrawingWindow.h>
+#include </home/kz21093/Documents/RedNoise/libs/sdw/Utils.h>
+#include <iostream>
 #include <fstream>
 #include <vector>
 
@@ -32,6 +33,23 @@ void handleEvent(SDL_Event event, DrawingWindow &window) {
 	}
 }
 
+std::vector<float> interpolateSingleFloats(float from, float to, int numberOfValues) {
+    std::vector<float> result;
+    
+    // Calculate the step size
+    float step = (to - from) / (numberOfValues - 1);
+
+    // Generate the values and add them to the result vector
+    for (int i = 0; i < numberOfValues; ++i) {
+        result.push_back(from + i * step);
+    }
+
+    return result;
+}
+
+
+
+
 int main(int argc, char *argv[]) {
 	DrawingWindow window = DrawingWindow(WIDTH, HEIGHT, false);
 	SDL_Event event;
@@ -42,4 +60,11 @@ int main(int argc, char *argv[]) {
 		// Need to render the frame at the end, or nothing actually gets shown on the screen !
 		window.renderFrame();
 	}
+
+	std::vector<float> result;
+	result = interpolateSingleFloats(2.2, 8.5, 7);
+	for(size_t i=0; i<result.size(); i++) std::cout << result[i] << " ";
+	std::cout << std::endl;
+
+	return 0;
 }
