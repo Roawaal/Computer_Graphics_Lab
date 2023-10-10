@@ -1,3 +1,0 @@
-/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/rebuild_cache.dir
-/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/RedNoise.dir
-/home/kz21093/Downloads/RedNoise/RedNoise/build/CMakeFiles/edit_cache.dir
