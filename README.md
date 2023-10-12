@@ -2,6 +2,6 @@
 
 *Week1 Done*
 
-*Week2 Done Except Task5 In prograss*
+*Week2 Done Except Task5 In progress*
 
 *Week3*
