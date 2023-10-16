@@ -7,13 +7,38 @@
 #include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/Colour.h>
 #include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/CanvasPoint.h>
 #include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/TextureMap.h>
-
+#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/ModelTriangle.h>
+#include <sstream>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/CanvasPoint.h>
 
 #define WIDTH 320
 #define HEIGHT 240
 
+struct ProjectedPoint {
+    float u;
+    float v;
+    float depth;
+};
 
-// Task2
+
+ProjectedPoint getCanvasIntersectionPoint(const glm::vec3& cameraPosition, const glm::vec3& vertexPosition, float focalLength, float W, float H) {
+    // Convert the vertex position to camera coordinates
+    float x = vertexPosition.x - cameraPosition.x;
+    float y = vertexPosition.y - cameraPosition.y;
+    float z = vertexPosition.z - cameraPosition.z;
+
+    // Project the point onto the image plane
+    float u = focalLength * (x / z) + W / 2;
+    float v = focalLength * (y / z) + H / 2;
+
+    return ProjectedPoint{u, v};
+}
+
+
+
 std::vector<float> interpolate(float from, float to, int numberOfValues) {
     std::vector<float> values;
     for (int i = 0; i < numberOfValues; i++) {
@@ -34,105 +59,104 @@ void drawLine(DrawingWindow &window, const CanvasPoint &from, const CanvasPoint 
     }
 }
 
-// Task3
-void drawTriangle(DrawingWindow &window, CanvasTriangle &triangle, const Colour &colour) {
-    drawLine(window, triangle.v0(), triangle.v1(), colour);
-    drawLine(window, triangle.v1(), triangle.v2(), colour);
-    drawLine(window, triangle.v2(), triangle.v0(), colour);
+
+void drawStrokedTriangle(DrawingWindow &window, CanvasTriangle triangle, Colour colour) {
+    drawLine(window, triangle.vertices[0], triangle.vertices[1], colour);
+    drawLine(window, triangle.vertices[1], triangle.vertices[2], colour);
+    drawLine(window, triangle.vertices[2], triangle.vertices[0], colour);
 }
 
-void sortVerticesByY(CanvasPoint &p0, CanvasPoint &p1, CanvasPoint &p2) {
-    if(p0.y > p1.y) std::swap(p0, p1);
-    if(p0.y > p2.y) std::swap(p0, p2);
-    if(p1.y > p2.y) std::swap(p1, p2);
+// Use an unordered_map to store colors with their names as keys
+std::unordered_map<std::string, Colour> loadMaterialsFile(const std::string& filename) {
+    std::unordered_map<std::string, Colour> materials;
+    std::ifstream file(filename);
+    std::string line;
+    std::string currentMaterial;
+
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        std::string token;
+        ss >> token;
+
+        if (token == "newmtl") {
+            ss >> currentMaterial;
+        } else if (token == "Kd") {
+            float r, g, b;
+            ss >> r >> g >> b;
+            materials[currentMaterial] = Colour(int(r * 255), int(g * 255), int(b * 255));
+        }
+    }
+    
+    return materials;
 }
+//The operator[] for std::unordered_map is non-const because it can potentially insert a new element into the map if the key is not found. 
+std::vector<ModelTriangle> loadGeometryFile(const std::string& filename, std::unordered_map<std::string, Colour>& materials) {
+    std::vector<ModelTriangle> triangles;
+    std::vector<glm::vec3> vertices;
+    std::ifstream file(filename);
+    std::string line;
+    Colour currentColor;
 
-// Task4
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        std::string token;
+        ss >> token;
 
-void drawFilledTriangle(DrawingWindow &window, CanvasTriangle &triangle, const Colour &colour) {
-    CanvasPoint v0 = triangle.v0();
-    CanvasPoint v1 = triangle.v1();
-    CanvasPoint v2 = triangle.v2();
-
-    sortVerticesByY(v0, v1, v2);
-
-    // For flat-bottom triangle
-    for (float y = v0.y; y <= v1.y; y++) {
-        float x0 = v0.x + ((y - v0.y) * (v1.x - v0.x)) / (v1.y - v0.y);
-        float x1 = v0.x + ((y - v0.y) * (v2.x - v0.x)) / (v2.y - v0.y);
-        if (x1 < x0) std::swap(x0, x1); // make sure x0 is left of x1
-        for (float x = x0; x <= x1; x++) {
-            uint32_t packedColor = (255 << 24) + (colour.red << 16) + (colour.green << 8) + colour.blue;
-            window.setPixelColour(std::round(x), std::round(y), packedColor);
-    }
-    }
-    // For flat-top triangle
-    for (float y = v1.y; y <= v2.y; y++) {
-        float x0 = v1.x + ((y - v1.y) * (v2.x - v1.x)) / (v2.y - v1.y);
-        float x1 = v0.x + ((y - v0.y) * (v2.x - v0.x)) / (v2.y - v0.y);
-        if (x1 < x0) std::swap(x0, x1); // make sure x0 is left of x1
-        for (float x = x0; x <= x1; x++) {
-            uint32_t packedColor = (255 << 24) + (colour.red << 16) + (colour.green << 8) + colour.blue;
-            window.setPixelColour(std::round(x), std::round(y), packedColor);
+        if (token == "v") {
+            glm::vec3 vertex;
+            ss >> vertex.x >> vertex.y >> vertex.z;
+            vertices.push_back(vertex);
+        } else if (token == "usemtl") {
+            std::string materialName;
+            ss >> materialName;
+            currentColor = materials[materialName];
+        } else if (token == "f") {
+            // Assuming triangles only for simplicity
+            int v1, v2, v3;
+            ss >> v1 >> v2 >> v3;
+            triangles.push_back(ModelTriangle(vertices[v1-1], vertices[v2-1], vertices[v3-1], currentColor));
         }
     }
 
-    // Draw a white stroked triangle over the filled triangle
-    Colour white(255, 255, 255);
-    drawTriangle(window, triangle, white);
+    return triangles;
 }
 
-// Task5
 
-TextureMap texture("/home/kz21093/Downloads/RedNoise/RedNoise/texture.ppm");
+std::vector<ModelTriangle> loadOBJ(const std::string& filename, float scalingFactor) {
+    std::ifstream inFile(filename);
+    std::vector<glm::vec3> vertices;
+    std::vector<ModelTriangle> triangles;
 
-TexturePoint addTexturePoints(const TexturePoint &tp1, const TexturePoint &tp2) {
-    return TexturePoint(tp1.x + tp2.x, tp1.y + tp2.y);
-}
+    if (!inFile.is_open()) {
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return triangles;
+    }
 
-TexturePoint subtractTexturePoints(const TexturePoint &tp1, const TexturePoint &tp2) {
-    return TexturePoint(tp1.x - tp2.x, tp1.y - tp2.y);
-}
+    std::string line;
+    while (std::getline(inFile, line)) {
+        //instead of Utils::split
+        std::vector<std::string> tokens = split(line, ' ');
+        if (tokens.empty()) continue;
 
-TexturePoint multiplyTexturePointByScalar(const TexturePoint &tp, float scalar) {
-    return TexturePoint(tp.x * scalar, tp.y * scalar);
-}
-
-void drawTexturedTriangle(DrawingWindow &window, CanvasTriangle &triangle, TextureMap &texture) {
-    // Note: This method assumes that the CanvasTriangle vertices are sorted by y value.
-
-    // For brevity, I'm omitting the filling logic that we've done previously.
-    // Instead, I'll focus on mapping the texture to the triangle.
-
-    for (int y = triangle.v0().y; y < triangle.v2().y; y++) {
-        // Linearly interpolate to find start and end x values (and their corresponding texture points)
-        float alpha1 = (y - triangle.v0().y) / (triangle.v2().y - triangle.v0().y);
-        float alpha2 = (y - triangle.v0().y) / (triangle.v1().y - triangle.v0().y);
-
-        int x1 = triangle.v0().x + alpha1 * (triangle.v2().x - triangle.v0().x);
-        int x2 = triangle.v0().x + alpha2 * (triangle.v1().x - triangle.v0().x);
-
-        TexturePoint diff1 = subtractTexturePoints(triangle.v2().texturePoint, triangle.v0().texturePoint);
-        TexturePoint tp1 = addTexturePoints(triangle.v0().texturePoint, multiplyTexturePointByScalar(diff1, alpha1));
-
-        TexturePoint diff2 = subtractTexturePoints(triangle.v1().texturePoint, triangle.v0().texturePoint);
-        TexturePoint tp2 = addTexturePoints(triangle.v0().texturePoint, multiplyTexturePointByScalar(diff2, alpha2));
-        for (int x = x1; x < x2; x++) {
-            // Interpolate the texture point
-            float beta = (x - x1) / (float)(x2 - x1);
-            TexturePoint texDiff = subtractTexturePoints(tp2, tp1);
-            TexturePoint texPoint = addTexturePoints(tp1, multiplyTexturePointByScalar(texDiff, beta));
-
-            // Sample the texture
-            int textureIndex = texPoint.y * texture.width + texPoint.x;
-            uint32_t sampledColour = texture.pixels[textureIndex];
-
-            // Set the pixel on the window
-            window.setPixelColour(x, y, sampledColour);
+        if (tokens[0] == "v") {
+            glm::vec3 vertex;
+            vertex.x = std::stof(tokens[1]) * scalingFactor;
+            vertex.y = std::stof(tokens[2]) * scalingFactor;
+            vertex.z = std::stof(tokens[3]) * scalingFactor;
+            vertices.push_back(vertex);
+        } else if (tokens[0] == "f") {
+            Colour color; // Assuming a Colour class is defined somewhere. If it's not, you can remove this line.
+            ModelTriangle triangle(vertices[std::stoi(tokens[1]) - 1], 
+                                   vertices[std::stoi(tokens[2]) - 1], 
+                                   vertices[std::stoi(tokens[3]) - 1], color);
+            triangles.push_back(triangle);
         }
     }
-}
 
+    inFile.close();
+    return triangles;
+}
+/*
 void draw(DrawingWindow &window) {
 	window.clearPixels();
 	for (size_t y = 0; y < window.height; y++) {
@@ -145,73 +169,66 @@ void draw(DrawingWindow &window) {
 		}
 	}
 }
+*/
 
-void handleEvent(SDL_Event event, DrawingWindow &window) {
-    if (event.type == SDL_KEYDOWN) {
-        if (event.key.keysym.sym == SDLK_u) {
-            // Generate random triangle and colour for triangle drawing
-            CanvasPoint p0(rand()%WIDTH, rand()%HEIGHT);
-            CanvasPoint p1(rand()%WIDTH, rand()%HEIGHT);
-            CanvasPoint p2(rand()%WIDTH, rand()%HEIGHT);
-            CanvasTriangle randomTriangle(p0, p1, p2);
-
-            Colour randomColour(rand()%256, rand()%256, rand()%256);
-            drawTriangle(window, randomTriangle, randomColour);
+void draw(DrawingWindow &window, std::vector<ModelTriangle> triangles, const glm::vec3& cameraPosition, float focalLength) {
+    window.clearPixels();
+    
+    float scalingFactor = 240.0f;  // Scaling to make the points visible on our canvas
+    
+    for(const ModelTriangle& triangle : triangles) {
+        CanvasTriangle canvasTriangle;
+        
+        for(int i = 0; i < 3; i++) {
+            ProjectedPoint projectedPoint = getCanvasIntersectionPoint(cameraPosition, triangle.vertices[i], focalLength, WIDTH, HEIGHT);
+            CanvasPoint point;
+            point.x = projectedPoint.u * scalingFactor;
+            point.y = projectedPoint.v * scalingFactor;
+            point.depth = projectedPoint.depth;
+            
+            canvasTriangle.vertices[i] = point;
         }
-        else if (event.key.keysym.sym == SDLK_f) {
-            // Generate random triangle and colour for filled triangle drawing
-            CanvasPoint p0(rand()%WIDTH, rand()%HEIGHT);
-            CanvasPoint p1(rand()%WIDTH, rand()%HEIGHT);
-            CanvasPoint p2(rand()%WIDTH, rand()%HEIGHT);
-            CanvasTriangle randomTriangle(p0, p1, p2);
-
-            Colour randomColour(rand()%256, rand()%256, rand()%256);
-            drawFilledTriangle(window, randomTriangle, randomColour);
-        }else if (event.key.keysym.sym == SDLK_t) {
-            // Generate random triangle
-            CanvasPoint p0(rand()%WIDTH, rand()%HEIGHT);
-            CanvasPoint p1(rand()%WIDTH, rand()%HEIGHT);
-            CanvasPoint p2(rand()%WIDTH, rand()%HEIGHT);
-            CanvasTriangle randomTriangle(p0, p1, p2);
-
-            // Link CanvasPoints to TexturePoints if needed
-            drawTexturedTriangle(window, randomTriangle, texture);
-        }   
-        else if (event.key.keysym.sym == SDLK_LEFT) std::cout << "LEFT" << std::endl;
-        else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
-        else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
-        else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
-    } 
-    else if (event.type == SDL_MOUSEBUTTONDOWN) {
-        window.savePPM("output.ppm");
-        window.saveBMP("output.bmp");
+        
+        drawStrokedTriangle(window, canvasTriangle, Colour(255, 255, 255));
     }
 }
 
 
+
+void handleEvent(SDL_Event event, DrawingWindow &window) {
+	if (event.type == SDL_KEYDOWN) {
+		if (event.key.keysym.sym == SDLK_LEFT) std::cout << "LEFT" << std::endl;
+		else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
+		else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
+		else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
+	} else if (event.type == SDL_MOUSEBUTTONDOWN) {
+		window.savePPM("output.ppm");
+		window.saveBMP("output.bmp");
+	}
+}
+
 int main(int argc, char *argv[]) {
-	DrawingWindow window = DrawingWindow(WIDTH, HEIGHT, false);
-    window.clearPixels();
-    // Test: Draw a textured triangle
-    CanvasPoint p1(160, 10);
-    p1.texturePoint = TexturePoint(195, 5);
+	//std::vector<ModelTriangle> triangles = loadOBJ("/home/kz21093/Downloads/RedNoise/RedNoise/cornell-box.obj", 0.35);
+    auto materials = loadMaterialsFile("/home/kz21093/Downloads/RedNoise/RedNoise/cornell-box.mtl");
+    auto triangles = loadGeometryFile("/home/kz21093/Downloads/RedNoise/RedNoise/cornell-box.obj", materials);
 
-    CanvasPoint p2(300, 230);
-    p2.texturePoint = TexturePoint(395, 380);
-
-    CanvasPoint p3(10, 150);
-    p3.texturePoint = TexturePoint(65, 330);
-
-    CanvasTriangle triangle(p1, p2, p3);
-    TextureMap texture("/home/kz21093/Downloads/RedNoise/RedNoise/texture.ppm");
-    drawTexturedTriangle(window, triangle, texture);
-
-    SDL_Event event;
-    while (true) {
-        // We MUST poll for events - otherwise the window will freeze!
-        if (window.pollForInputEvents(event)) handleEvent(event, window);
-        // You may want to invoke some other drawing function here if needed
-        window.renderFrame();
+    // Print the loaded triangles
+    for (const auto& triangle : triangles) {
+        std::cout << triangle << std::endl;
     }
-	return 0;
+    glm::vec3 cameraPosition = glm::vec3(0, 0, -4); // Placing the camera at a suitable location
+    float focalLength = 1.0f; // Just a starting point, adjust as needed
+   
+   
+    DrawingWindow window = DrawingWindow(WIDTH, HEIGHT, false);
+	SDL_Event event;
+	while (true) {
+		// We MUST poll for events - otherwise the window will freeze !
+		if (window.pollForInputEvents(event)) handleEvent(event, window);
+		// draw(window);
+        draw(window, triangles, cameraPosition, focalLength);
+		// Need to render the frame at the end, or nothing actually gets shown on the screen !
+		window.renderFrame();
+	}
+    return 0;
 }
