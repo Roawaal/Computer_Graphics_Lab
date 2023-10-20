@@ -20,4 +20,6 @@
 ![My Image](Images/Week3_Task6.png)
 
 ### Week4 ###
+*Failed from the Task6: the pointcloud render cannot be imagined of the room corners and boxes*
 
+![My Image](Images/Week4.jpg)
