@@ -41,7 +41,6 @@ void drawTriangle(DrawingWindow &window, CanvasTriangle &triangle, const Colour 
     drawLine(window, triangle.v1(), triangle.v2(), colour);
     drawLine(window, triangle.v2(), triangle.v0(), colour);
 }
-
 void sortVerticesByY(CanvasPoint &p0, CanvasPoint &p1, CanvasPoint &p2) {
     if(p0.y > p1.y) std::swap(p0, p1);
     if(p0.y > p2.y) std::swap(p0, p2);
