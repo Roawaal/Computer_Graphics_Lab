@@ -4,7 +4,7 @@
 *Done*
 
 ### Week2 ###
-*Done Except Task5 In progress*
+*Done*
 
 ### Week3 ###
 *Task3*
