@@ -31,9 +31,15 @@
 ### Week7(External Lecture) ###
 
 ### CourseWork ###
+
 *Soft Shadow*
+
 *Reflective Materials*
+
 *Environment Maps*
+
 *Refractive Materials*
+
 *Normal Maps*
+
 *Photo Maps*
