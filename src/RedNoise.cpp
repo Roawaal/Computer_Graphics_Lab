@@ -17,6 +17,18 @@
 #define WIDTH 320
 #define HEIGHT 240
 
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, -5.0f); // Position the camera slightly back
+glm::vec3 cameraRot = glm::vec3(0.0f, 0.0f, 0.0f); // Rotation about X and Y axes
+const float moveSpeed = 0.1f;
+const float rotSpeed = 0.01f;
+
+glm::mat3 createRotationMatrix(const glm::vec3& rot) {
+    glm::mat3 rotX = glm::rotate(glm::mat4(1.0f), rot.x, glm::vec3(1, 0, 0));
+    glm::mat3 rotY = glm::rotate(glm::mat4(1.0f), rot.y, glm::vec3(0, 1, 0));
+    return rotY * rotX;
+}
+
 void draw(DrawingWindow &window) {
 	window.clearPixels();
 	for (size_t y = 0; y < window.height; y++) {
@@ -31,25 +43,43 @@ void draw(DrawingWindow &window) {
 }
 
 void handleEvent(SDL_Event event, DrawingWindow &window) {
-	if (event.type == SDL_KEYDOWN) {
-		if (event.key.keysym.sym == SDLK_LEFT) std::cout << "LEFT" << std::endl;
-		else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
-		else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
-		else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
-	} else if (event.type == SDL_MOUSEBUTTONDOWN) {
-		window.savePPM("output.ppm");
-		window.saveBMP("output.bmp");
-	}
+    if (event.type == SDL_KEYDOWN) {
+        if (event.key.keysym.sym == SDLK_LEFT) cameraPos.x -= moveSpeed;
+        else if (event.key.keysym.sym == SDLK_RIGHT) cameraPos.x += moveSpeed;
+        else if (event.key.keysym.sym == SDLK_UP) cameraPos.y += moveSpeed;
+        else if (event.key.keysym.sym == SDLK_DOWN) cameraPos.y -= moveSpeed;
+        else if (event.key.keysym.sym == SDLK_w) cameraPos.z += moveSpeed;
+        else if (event.key.keysym.sym == SDLK_s) cameraPos.z -= moveSpeed;
+        else if (event.key.keysym.sym == SDLK_a) cameraRot.y -= rotSpeed;
+        else if (event.key.keysym.sym == SDLK_d) cameraRot.y += rotSpeed;
+        else if (event.key.keysym.sym == SDLK_q) cameraRot.x -= rotSpeed;
+        else if (event.key.keysym.sym == SDLK_e) cameraRot.x += rotSpeed;
+    }
+    else if (event.type == SDL_MOUSEBUTTONDOWN) {
+        window.savePPM("output.ppm");
+        window.saveBMP("output.bmp");
+    }
 }
 
+
+
+
 int main(int argc, char *argv[]) {
-	DrawingWindow window = DrawingWindow(WIDTH, HEIGHT, false);
-	SDL_Event event;
-	while (true) {
-		// We MUST poll for events - otherwise the window will freeze !
-		if (window.pollForInputEvents(event)) handleEvent(event, window);
-		draw(window);
-		// Need to render the frame at the end, or nothing actually gets shown on the screen !
-		window.renderFrame();
-	}
+    DrawingWindow window = DrawingWindow(WIDTH, HEIGHT, false);
+    SDL_Event event;
+
+    while (true) {
+        // Poll for events
+        if (window.pollForInputEvents(event)) handleEvent(event, window);
+
+        // Apply rotation to camera position
+        glm::mat3 rotMatrix = createRotationMatrix(cameraRot);
+        glm::vec3 transformedCameraPos = rotMatrix * cameraPos;
+
+        // Draw the scene with the updated camera position
+        draw(window, transformedCameraPos);
+
+        // Render the frame
+        window.renderFrame();
+    }
 }
