@@ -81,5 +81,7 @@ int main(int argc, char *argv[]) {
 
         // Render the frame
         window.renderFrame();
+	frameNumber++;
+	window.saveBMP("output" + frameNumber + ".bmp");    
     }
 }
