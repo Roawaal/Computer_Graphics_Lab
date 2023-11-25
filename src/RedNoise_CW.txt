@@ -314,7 +314,7 @@ void draw(DrawingWindow & window)
         }
 }
 */
-void handleEvent(SDL_Event event, DrawingWindow &window)
+/*void handleEvent(SDL_Event event, DrawingWindow &window)
 {
     if (event.type == SDL_KEYDOWN)
     {
@@ -329,6 +329,24 @@ void handleEvent(SDL_Event event, DrawingWindow &window)
     }
     else if (event.type == SDL_MOUSEBUTTONDOWN)
     {
+        window.savePPM("output.ppm");
+        window.saveBMP("output.bmp");
+    }
+}*/
+void handleEvent(SDL_Event event, DrawingWindow &window) {
+    if (event.type == SDL_KEYDOWN) {
+        if (event.key.keysym.sym == SDLK_LEFT) cameraPos.x -= moveSpeed;
+        else if (event.key.keysym.sym == SDLK_RIGHT) cameraPos.x += moveSpeed;
+        else if (event.key.keysym.sym == SDLK_UP) cameraPos.y += moveSpeed;
+        else if (event.key.keysym.sym == SDLK_DOWN) cameraPos.y -= moveSpeed;
+        else if (event.key.keysym.sym == SDLK_w) cameraPos.z += moveSpeed;
+        else if (event.key.keysym.sym == SDLK_s) cameraPos.z -= moveSpeed;
+        else if (event.key.keysym.sym == SDLK_a) cameraRot.y -= rotSpeed;
+        else if (event.key.keysym.sym == SDLK_d) cameraRot.y += rotSpeed;
+        else if (event.key.keysym.sym == SDLK_q) cameraRot.x -= rotSpeed;
+        else if (event.key.keysym.sym == SDLK_e) cameraRot.x += rotSpeed;
+    }
+    else if (event.type == SDL_MOUSEBUTTONDOWN) {
         window.savePPM("output.ppm");
         window.saveBMP("output.bmp");
     }
