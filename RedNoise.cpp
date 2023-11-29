@@ -123,8 +123,51 @@ std::vector<Material> loadMtlFile(const std::string &filename);
 Model loadObjFile(const std::string &filename, float scale);
 
 
-//constructor for initialization of 'TextureMap'
-//
+
+TextureMap loadTextureMap(const std::string &filename) {
+    std::ifstream inputStream(filename, std::ifstream::binary);
+    std::string nextLine;
+    // Get the "P6" magic number
+    std::getline(inputStream, nextLine);
+    // Read the width and height line
+    std::getline(inputStream, nextLine);
+    // Skip over any comment lines
+    while (nextLine.at(0) == '#') std::getline(inputStream, nextLine);
+    auto widthAndHeight = split(nextLine, ' ');
+    if (widthAndHeight.size() != 2)
+        throw std::invalid_argument("Failed to parse width and height line, line was `" + nextLine + "`");
+
+    auto width = std::stoi(widthAndHeight[0]);
+    auto height = std::stoi(widthAndHeight[1]);
+    // Read the max value (which we assume is 255)
+    std::getline(inputStream, nextLine);
+
+    std::vector<uint32_t> pixels;
+    pixels.resize(width * height);
+    for (size_t i = 0; i < width * height; i++) {
+        int red = inputStream.get();
+        int green = inputStream.get();
+        int blue = inputStream.get();
+        pixels[i] = ((255 << 24) + (red << 16) + (green << 8) + (blue));
+    }
+    inputStream.close();
+
+    // Create a temporary TextureMap object using the default constructor
+    TextureMap tempTextureMap;
+    
+    // Copy the data to the temporary object
+    tempTextureMap.width = width;
+    tempTextureMap.height = height;
+    tempTextureMap.pixels = pixels;
+
+    // Create a new TextureMap object and copy the data from the temporary one
+    TextureMap textureMap;
+    textureMap.width = tempTextureMap.width;
+    textureMap.height = tempTextureMap.height;
+    textureMap.pixels = tempTextureMap.pixels;
+
+    return textureMap;
+}
 
 std::vector<Material> loadMtlFile(const std::string &filename) {
 	std::cout << "[LOADING MTL: " << filename << "]" << std::endl;
