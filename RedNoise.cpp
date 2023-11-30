@@ -1,22 +1,21 @@
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/CanvasTriangle.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/DrawingWindow.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/Utils.h>
+#include <CanvasTriangle.h>
+#include <DrawingWindow.h>
+#include <Utils.h>
 #include <fstream>
 #include <vector>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/glm-0.9.7.2/glm/glm.hpp>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/Colour.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/CanvasPoint.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/TextureMap.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/ModelTriangle.h>
+#include </home/kz21093/Documents/RedNoise/RedNoise/libs/glm-0.9.7.2/glm/glm.hpp>
+#include <Colour.h>
+#include <CanvasPoint.h>
+#include <TextureMap.h>
 #include <sstream>
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/CanvasPoint.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/TexturePoint.h>
-#include </home/kz21093/Downloads/RedNoise/RedNoise/libs/sdw/RayTriangleIntersection.h>
+#include <TexturePoint.h>
+#include <RayTriangleIntersection.h>
 #include <algorithm>
 #include <cmath>
+#include <TextureMap.h>
 
 #define WIDTH 480
 #define HEIGHT 360
