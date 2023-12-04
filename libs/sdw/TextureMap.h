@@ -4,14 +4,15 @@
 #include <fstream>
 #include <stdexcept>
 #include "Utils.h"
+#include <cstdint>
 
-class TextureMap {
-public:
-	size_t width;
-	size_t height;
-	std::vector<uint32_t> pixels;
-
+struct TextureMap {
+	size_t width{};
+	size_t height{};
+	std::vector<uint32_t> pixels{};
 	TextureMap();
-	TextureMap(const std::string &filename);
+	TextureMap(size_t w, size_t h, const std::vector<uint32_t> &p);
 	friend std::ostream &operator<<(std::ostream &os, const TextureMap &point);
 };
+
+TextureMap loadTextureMap(const std::string &filename);
