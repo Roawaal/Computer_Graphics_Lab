@@ -20,39 +20,14 @@
 #define HEIGHT 480
 
 #define PI 3.14159265358979323846
-
-
-RayTriangleIntersection getClosestIntersection(glm::vec3 startPoint, glm::vec3 direction, const std::vector<Model> &models) {
-	RayTriangleIntersection intersection;
-	float epsilon = 0.0001;
-	intersection.distanceFromCamera = std::numeric_limits<float>::infinity();
-	int i = 0;
-	for (const auto& model : models) {
-		int j = 0;
-		for (const auto& triangle : model.faces) {
-			auto point = glm::inverse(glm::mat3(
-				-direction,
-				glm::vec3(triangle.vertices[1] - triangle.vertices[0]),
-				glm::vec3(triangle.vertices[2] - triangle.vertices[0])
-			)) * (startPoint - (glm::vec3(triangle.vertices[0]) + model.position));
-
-			if (epsilon <= point[0] && point[0] < intersection.distanceFromCamera &&
-				0 <= point[1] && point[1] <= 1 &&
-				0 <= point[2] && point[2] <= 1 &&
-				point[1] + point[2] <= 1
-			) {
-				intersection.intersectionPoint = point;
-				intersection.distanceFromCamera = point[0];
-				intersection.intersectedTriangle = triangle;
-				intersection.modelIndex = i;
-				intersection.triangleIndex = j;
-			}
-			++j;
-		}
-		++i;
-	}
-	return intersection;
-}
+struct Light {
+    glm::vec3 position{};
+    uint32_t size{};
+    float strength{};
+    Colour colour{};
+    Light();
+    Light(const glm::vec3 &pos, uint32_t size, float strength, const Colour &colour);
+};
 
 float getNumberOfSteps(CanvasPoint from, CanvasPoint to) {
 	return fmax(fmax(abs(to.x - from.x), abs(to.y - from.y)), 1);
@@ -241,7 +216,122 @@ void draw(DrawingWindow &window, int renderMode, glm::mat4 camera, float focalLe
 	
 }
 
-void handleEvent(SDL_Event event, DrawingWindow &window, glm::mat4 &camera, int &renderMode) {
+Light::Light() = default;
+Light::Light(const glm::vec3 &pos, uint32_t size, float strength, const Colour &colour) :
+    position(pos), size(size), strength(strength), colour(colour) {}
+
+
+RayTriangleIntersection getClosestIntersection(glm::vec3 startPoint, glm::vec3 direction, const std::vector<Model> &models) {
+	RayTriangleIntersection intersection;
+	float epsilon = 0.0001;
+	intersection.distanceFromCamera = std::numeric_limits<float>::infinity();
+	int i = 0;
+	for (const auto& model : models) {
+		int j = 0;
+		for (const auto& triangle : model.faces) {
+			auto point = glm::inverse(glm::mat3(
+				-direction,
+				glm::vec3(triangle.vertices[1] - triangle.vertices[0]),
+				glm::vec3(triangle.vertices[2] - triangle.vertices[0])
+			)) * (startPoint - (glm::vec3(triangle.vertices[0]) + model.position));
+
+			if (epsilon <= point[0] && point[0] < intersection.distanceFromCamera &&
+				0 <= point[1] && point[1] <= 1 &&
+				0 <= point[2] && point[2] <= 1 &&
+				point[1] + point[2] <= 1
+			) {
+				intersection.intersectionPoint = point;
+				intersection.distanceFromCamera = point[0];
+				intersection.intersectedTriangle = triangle;
+				intersection.modelIndex = i;
+				intersection.triangleIndex = j;
+			}
+			++j;
+		}
+		++i;
+	}
+	return intersection;
+}
+
+glm::vec3 getPixelBrightness(glm::vec3 camDir, float u, float v, ModelTriangle triangle, glm::vec3 modelPosition, const std::vector<Model> &models, const std::vector<Light> &lights) {
+	auto ps = triangle.vertices;
+	auto r = glm::vec3(ps[0] + u * (ps[1] - ps[0]) + v * (ps[2] - ps[0])) + modelPosition;
+	glm::vec3 brightness(0.0, 0.0, 0.0);
+	for (const auto &light : lights) {
+		std::vector<glm::vec3> directions;
+		directions.push_back(light.position - r);	
+		
+		// Calculate lighting for each direction
+		for (const auto &direction : directions) {
+			auto intersect = getClosestIntersection(r, glm::normalize(direction), models);
+			auto length = glm::length(direction);
+			
+			if (intersect.distanceFromCamera < length) continue;
+			
+			// Calculate lighting contributions
+			auto normals = triangle.vertexNormals;
+			auto normal = (1 - u - v) * normals[0] + u * normals[1] + v * normals[2];
+			
+			// Handle Phong shading
+			if (glm::length(normal) < 0.001) {
+				normal = triangle.normal;
+			}
+			
+			float proximity = (light.strength / directions.size()) / (4 * PI * std::pow(length, 2));
+			float incidence = std::max(0.0f, glm::dot(glm::normalize(direction), normal));
+			
+			float lightBrightness = proximity * incidence;
+			brightness += glm::vec3(light.colour.red * lightBrightness / 255, light.colour.green * lightBrightness / 255, light.colour.blue * lightBrightness / 255);
+		}
+	}
+
+	// Ensure brightness is clamped to [0, 1]
+	brightness[0] = std::max(0.0f, std::min(1.0f, brightness[0]));
+	brightness[1] = std::max(0.0f, std::min(1.0f, brightness[1]));
+	brightness[2] = std::max(0.0f, std::min(1.0f, brightness[2]));
+	
+	return brightness;
+}
+
+void drawRaytraced(DrawingWindow &window, glm::mat4 camera, float focalLength, float planeMultiplier, const std::vector<Model> &models, const std::vector<Light> &lights) {
+	glm::vec3 camPos(camera[3]);
+	glm::vec3 camOri[] = {
+    	glm::vec3(camera[0]),
+    	glm::vec3(camera[1]),
+    	glm::vec3(camera[2])
+	};
+	for (int x = 0; x < window.width; x++) {
+		for (int y = 0; y < window.height; y++) {
+			glm::vec3 direction(-(float(window.width / 2) - x) / planeMultiplier, (float(window.height / 2) - y) / planeMultiplier, -2);
+			glm::vec3 result[3];
+			for (int i = 0; i < 3; i++) {
+    			result[i] = camOri[i] * direction;
+			}
+			//glm::vec3 camDir = glm::normalize(camOri * direction);
+			auto intersect = getClosestIntersection(camPos, result[3], models);
+			auto colour = intersect.intersectedTriangle.material.colour;
+
+			if (intersect.distanceFromCamera != std::numeric_limits<float>::infinity()) {
+				auto modelPosition = models[intersect.modelIndex].position;
+				auto tri = intersect.intersectedTriangle;
+				auto u = intersect.intersectionPoint[1];
+				auto v = intersect.intersectionPoint[2];
+				auto baseBrightness = 1.0;
+
+				auto brightness = getPixelBrightness(result[3], u, v, tri, modelPosition, models, lights);
+				colour.red *= baseBrightness * brightness[0];
+				colour.green *= baseBrightness * brightness[1];
+				colour.blue *= baseBrightness * brightness[2];
+			}
+
+			uint32_t c = (255 << 24) + (colour.red << 16) + (colour.green << 8) + colour.blue;
+			window.setPixelColour(x, y, c);
+		}
+	}
+}
+
+
+void handleEvent(SDL_Event event, DrawingWindow &window, glm::mat4 &camera, int &renderMode, bool &Bool) {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_w) camera = translationMatrix(glm::vec3(0.0, 0.0, -0.5)) * camera;
 		else if (event.key.keysym.sym == SDLK_s) camera = translationMatrix(glm::vec3(0.0, 0.0, 0.5)) * camera;
@@ -272,6 +362,12 @@ int main(int argc, char *argv[]) {
 	models[1].position = glm::vec3(-0.5, 0.0, 0.0);
 	models[2].position = glm::vec3(-0.25, -1.0, 1.0);
 
+
+	std::vector<Light> lights;
+	lights.push_back(Light(glm::vec3(1.0, 2.0, 4.0), 1, 50, Colour(128, 255, 128)));
+	lights.push_back(Light(glm::vec3(1.0, 0.0, 0.0), 1, 50, Colour(255, 128, 128)));
+	lights.push_back(Light(glm::vec3(-1.0, -1.0, 1.0), 1, 50, Colour(128, 128, 255)));
+
 	glm::mat4 camera(
 		1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
@@ -281,13 +377,19 @@ int main(int argc, char *argv[]) {
 	float focalLength = 2.0;
 	float planeMultiplier = 250;
 	int renderMode = 1;
-
+	bool Bool = true;
 	SDL_Event event;
+
 	while (true) {
 		if (window.pollForInputEvents(event)) {
-			handleEvent(event, window, camera, renderMode);
-			draw(window, renderMode, camera, focalLength, planeMultiplier, models);
+			handleEvent(event, window, camera, renderMode, Bool);
+			if (Bool) {
+				if (renderMode == 2) drawRaytraced(window, camera, focalLength, planeMultiplier, models, lights);
+				else draw(window, renderMode, camera, focalLength, planeMultiplier, models);
+				Bool = false;
+			}
 		}
 		window.renderFrame();
 	}
 }
+
