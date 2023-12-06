@@ -1,26 +1,135 @@
 #include <CanvasTriangle.h>
 #include <DrawingWindow.h>
 #include <Utils.h>
+#include <fstream>
 #include <vector>
 #include <glm/glm.hpp>
 #include <CanvasPoint.h>
 #include <CanvasTriangle.h>
 #include <Colour.h>
 #include <ModelTriangle.h>
-#include <Model.h>
 #include <TextureMap.h>
 #include <TexturePoint.h>
+#include <Utils.h>
 #include <algorithm>
 #include <Maths.h>
 #include <RayTriangleIntersection.h>
 #include <cmath>
-#include <OBJParser.h>
 
 #define WIDTH 640
 #define HEIGHT 480
 
 #define PI 3.14159265358979323846
 
+std::vector<Colour> loadMtlFile(const std::string &filename) {
+	std::vector<Colour> colours;
+
+	std::ifstream inputStream(filename, std::ifstream::in);
+	std::string nextLine;
+	std::string name;
+
+	while (std::getline(inputStream, nextLine)) {
+		auto line = split(nextLine, ' ');
+		
+		if (line[0] == "newmtl") {
+			name = line[1];
+		} else if (line[0] == "Kd") {
+			colours.push_back(Colour(
+				name,
+				(int)(std::stof(line[1]) * 255),
+				(int)(std::stof(line[2]) * 255),
+				(int)(std::stof(line[3]) * 255)
+			));
+		}
+	}
+	return colours;
+}
+
+std::vector<ModelTriangle> loadObjFile(const std::string &filename, float scale) {
+	std::vector<glm::vec4> vertices;
+	std::vector<TexturePoint> textureVertices;
+	std::vector<ModelTriangle> faces;
+
+	std::ifstream inputStream(filename, std::ifstream::in);
+	std::string nextLine;
+	std::vector<Colour> materials;
+	Colour colour = Colour(255, 255, 255);
+
+	while (std::getline(inputStream, nextLine)) {
+		auto vector = split(nextLine, ' ');
+		if (vector[0] == "mtllib") {
+			materials = loadMtlFile(vector[1]);
+		}
+		else if (vector[0] == "usemtl") {
+			for (int i=0; i<materials.size(); i++) {
+				if (materials[i].name == vector[1]) {
+					colour = materials[i];
+					break;
+				}
+			}
+		}
+		else if (vector[0] == "v") {
+			vertices.push_back(glm::vec4(
+				std::stof(vector[1]) * scale,
+				std::stof(vector[2]) * scale,
+				std::stof(vector[3]) * scale,
+				1.0
+			));
+		}
+		else if (vector[0] == "vt") {
+			textureVertices.push_back(TexturePoint(
+				round(std::stof(vector[1]) * 480),
+				round(std::stof(vector[2]) * 395)
+			));
+		}
+		else if (vector[0] == "f") {
+			auto v1 = split(vector[1], '/');
+			auto v2 = split(vector[2], '/');
+			auto v3 = split(vector[3], '/');
+			auto triangle = ModelTriangle(
+				vertices[std::stoi(v1[0]) - 1],
+				vertices[std::stoi(v2[0]) - 1],
+				vertices[std::stoi(v3[0]) - 1],
+				colour
+			);
+			if (v1[1] != "") {
+				triangle.texturePoints[0] = textureVertices[std::stoi(v1[1]) - 1];
+				triangle.texturePoints[1] = textureVertices[std::stoi(v2[1]) - 1];
+				triangle.texturePoints[2] = textureVertices[std::stoi(v3[1]) - 1];
+			}
+			
+			triangle.normal = glm::normalize(glm::cross(glm::vec3(triangle.vertices[1] - triangle.vertices[0]), glm::vec3(triangle.vertices[2] - triangle.vertices[0])));
+			faces.push_back(triangle);
+		}
+	}
+	return faces;
+}
+
+RayTriangleIntersection getClosestIntersection(glm::vec3 startPoint, glm::vec3 direction, std::vector<ModelTriangle> triangles) {
+	RayTriangleIntersection intersection;
+	float epsilon = 0.00001;
+	intersection.distanceFromCamera = std::numeric_limits<float>::infinity();
+	for (int i=0; i<triangles.size(); i++) {
+		auto triangle = triangles[i];
+		auto point = glm::inverse(glm::mat3(
+			-direction,
+			glm::vec3(triangle.vertices[1] - triangle.vertices[0]),
+			glm::vec3(triangle.vertices[2] - triangle.vertices[0])
+		)) * (startPoint - glm::vec3(triangle.vertices[0]));
+
+		if (epsilon <= point[0] && point[0] < intersection.distanceFromCamera &&
+			0 <= point[1] && point[1] <= 1 &&
+			0 <= point[2] && point[2] <= 1 &&
+			point[1] + point[2] <= 1
+		) {
+			intersection.intersectionPoint = point;
+			intersection.distanceFromCamera = point[0];
+			intersection.intersectedTriangle = triangle;
+			intersection.triangleIndex = i;
+		}
+	}
+	return intersection;
+}
 
 float getNumberOfSteps(CanvasPoint from, CanvasPoint to) {
 	return fmax(fmax(abs(to.x - from.x), abs(to.y - from.y)), 1);
@@ -43,7 +152,7 @@ std::vector<TexturePoint> interpolatePoints(TexturePoint from, TexturePoint to, 
 	float xStep = (to.x - from.x) / (steps - 1);
 	float yStep = (to.y - from.y) / (steps - 1);
 	for (int i=0; i<steps; i++) {
-		TexturePoints.push_back(TexturePoint(from.x + (i * xStep),  from.y + (i * yStep)));
+		TexturePoints.push_back(TexturePoint(round(from.x + (i * xStep)),  round(from.y + (i * yStep))));
 	}
 	return TexturePoints;
 }
@@ -99,7 +208,7 @@ void getRowStartsAndEnds(CanvasTriangle triangle, float height1, float height2, 
 	getRowStartsAndEnds(triangle[0], triangle[1], triangle[2], height1, height2, rowStarts, rowEnds);
 }
 
-CanvasTriangle generateTriangle(const DrawingWindow &window) {
+CanvasTriangle generateTriangle(DrawingWindow &window) {
 	float depth = (float(rand()) / float(RAND_MAX)) * -10;
 	return CanvasTriangle(
 		CanvasPoint(rand()%(window.width - 1), rand()%(window.height - 1), depth),
@@ -140,7 +249,7 @@ void drawFilledTriangle(DrawingWindow &window, std::vector<float> &depthBuffer, 
 	}
 }
 
-void drawTexturedTriangle(DrawingWindow &window, std::vector<float> &depthBuffer, CanvasTriangle triangle, const TextureMap &texMap, bool outline) {
+void drawTexturedTriangle(DrawingWindow &window, std::vector<float> &depthBuffer, CanvasTriangle triangle, TextureMap &texMap, bool outline) {
 	sortTriangleVertices(triangle);
 
 	float height1 = triangle[1].y - triangle[0].y + 1;
@@ -154,94 +263,54 @@ void drawTexturedTriangle(DrawingWindow &window, std::vector<float> &depthBuffer
 		float numberOfSteps = getNumberOfSteps(canvasStarts[i], canvasEnds[i]);
 		auto points = interpolatePoints(canvasStarts[i].texturePoint, canvasEnds[i].texturePoint, numberOfSteps + 1);
 
-		auto width = texMap.width;
-		auto height = texMap.height;
-		
 		std::vector<Colour> colours;
 		for (float i=0.0; i<=numberOfSteps; i++) {
-			uint32_t c = texMap.pixels[(int(round(points[i].y * height)) % height) * width + int(round(points[i].x * width)) % width];
+			uint32_t c = texMap.pixels[(round(points[i].y) * texMap.width) + round(points[i].x)];
 			colours.push_back(Colour((c & 0xFF0000) >> 16, (c & 0xFF00) >> 8, (c & 0xFF)));
 		}
 		drawLine(window, depthBuffer, canvasStarts[i], canvasEnds[i], numberOfSteps, colours);
 	}
 }
 
-void draw(DrawingWindow &window, int renderMode, glm::mat4 camera, float focalLength, float planeMultiplier, const std::vector<Model> &models) {
+void draw(DrawingWindow &window, int renderMode, glm::mat4 camera, float focalLength, float planeMultiplier, std::vector<ModelTriangle> faces, TextureMap texMap) {
 	window.clearPixels();
 	std::vector<float> depthBuffer = std::vector<float>(window.height * window.width, 0);
 
-	for (int j=0; j<models.size(); j++) {
-		auto faces = models[j].faces;
-		for (int i=0; i<faces.size(); i++) {
-			auto face = faces[i];
-			CanvasTriangle triangle = CanvasTriangle();
+	for (int i=0; i<faces.size(); i++) {
+		auto face = faces[i];
+		CanvasTriangle triangle = CanvasTriangle();
 
-			glm::vec4 camPos(camera[3]);
-			glm::mat4 camOri(
-				glm::vec4(camera[0]),
-				glm::vec4(camera[1]),
-				glm::vec4(camera[2]),
-				glm::vec4(0.0, 0.0, 0.0, 1.0)
+		glm::vec4 camPos(camera[3]);
+		glm::mat4 camOri(
+			glm::vec4(camera[0]),
+			glm::vec4(camera[1]),
+			glm::vec4(camera[2]),
+			glm::vec4(0.0, 0.0, 0.0, 1.0)
+		);
+		
+		for (int j=0; j<face.vertices.size(); j++) {
+			auto vertex = (face.vertices[j] -  camPos) * camOri;
+			triangle.vertices[j] = CanvasPoint(
+				round((planeMultiplier * focalLength * vertex[0] / vertex[2]) + (window.width / 2)),
+				round((planeMultiplier * focalLength * vertex[1] / vertex[2]) + (window.height / 2)),
+				-1/vertex[2]
 			);
-			
-			for (int k=0; k<face.vertices.size(); k++) {
-				auto modelPosition = models[j].position;
-				auto vertex = glm::vec3((face.vertices[k] -  camPos) * camOri);
-				triangle.vertices[k] = CanvasPoint(
-					round(-(planeMultiplier * focalLength * (vertex[0] + modelPosition[0]) / (vertex[2] + modelPosition[2])) + (window.width / 2)),
-					round((planeMultiplier * focalLength * (vertex[1] + modelPosition[1]) / (vertex[2] + modelPosition[2])) + (window.height / 2)),
-					-1/vertex[2]
-				);
-				triangle.vertices[k].texturePoint = face.texturePoints[k];
-			}
+			triangle.vertices[j].texturePoint = face.texturePoints[j];
+		}
 
-			if (renderMode == 0) {
-				drawStrokedTriangle(window, depthBuffer, triangle, face.material.colour);
-			}
-			else if (face.material.textureMap.width != 0) {
-				drawTexturedTriangle(window, depthBuffer, triangle, face.material.textureMap, false);
-			}
-			else {
-				drawFilledTriangle(window, depthBuffer, triangle, face.material.colour, false);
-			}
+		if (renderMode == 0) {
+			drawStrokedTriangle(window, depthBuffer, triangle, face.colour);
+		}
+		else if (face.colour.name == "Cobbles") {
+			drawTexturedTriangle(window, depthBuffer, triangle, texMap, false);
+		}
+		else {
+			drawFilledTriangle(window, depthBuffer, triangle, face.colour, false);
 		}
 	}
-	
 }
 
-RayTriangleIntersection getClosestIntersection(glm::vec3 startPoint, glm::vec3 direction, const std::vector<Model> &models) {
-	RayTriangleIntersection intersection;
-	float epsilon = 0.0001;
-	intersection.distanceFromCamera = std::numeric_limits<float>::infinity();
-	int i = 0;
-	for (const auto& model : models) {
-		int j = 0;
-		for (const auto& triangle : model.faces) {
-			auto point = glm::inverse(glm::mat3(
-				-direction,
-				glm::vec3(triangle.vertices[1] - triangle.vertices[0]),
-				glm::vec3(triangle.vertices[2] - triangle.vertices[0])
-			)) * (startPoint - (glm::vec3(triangle.vertices[0]) + model.position));
-
-			if (epsilon <= point[0] && point[0] < intersection.distanceFromCamera &&
-				0 <= point[1] && point[1] <= 1 &&
-				0 <= point[2] && point[2] <= 1 &&
-				point[1] + point[2] <= 1
-			) {
-				intersection.intersectionPoint = point;
-				intersection.distanceFromCamera = point[0];
-				intersection.intersectedTriangle = triangle;
-				intersection.modelIndex = i;
-				intersection.triangleIndex = j;
-			}
-			++j;
-		}
-		++i;
-	}
-	return intersection;
-}
-
-void drawRaytraced(DrawingWindow &window, glm::mat4 camera, float focalLength, float planeMultiplier, const std::vector<Model> &models, glm::vec3 light) {
+void drawRaytraced(DrawingWindow &window, glm::mat4 camera, float focalLength, float planeMultiplier, std::vector<ModelTriangle> faces, glm::vec3 light, TextureMap texMap) {
 	glm::vec3 camPos(camera[3]);
 	glm::mat3 camOri(
 		(glm::vec3(camera[0])),
@@ -252,8 +321,9 @@ void drawRaytraced(DrawingWindow &window, glm::mat4 camera, float focalLength, f
 	for (int x=0; x<window.width; x++) {
 		for (int y=0; y<window.height; y++) {
 			glm::vec3 direction((float(window.width / 2) - x) / planeMultiplier, (float(window.height / 2) - y) / planeMultiplier, -2);
-			auto intersect = getClosestIntersection(glm::vec3(camPos), glm::normalize(camOri * direction), models);
-			auto colour = intersect.intersectedTriangle.material.colour;
+			
+			auto intersect = getClosestIntersection(glm::vec3(camPos), glm::normalize(camOri * direction), faces);
+			auto colour = intersect.intersectedTriangle.colour;
 			
 			if (intersect.distanceFromCamera != std::numeric_limits<float>::infinity()) {
 				auto ps = intersect.intersectedTriangle.vertices;
@@ -262,12 +332,12 @@ void drawRaytraced(DrawingWindow &window, glm::mat4 camera, float focalLength, f
 				auto r = glm::vec3(ps[0] + u * (ps[1] - ps[0]) + v * (ps[2] - ps[0]));
 				auto lightDirection = light - r;
 
-				float lightStrength = 10000;//50
+				float lightStrength = 50;
 				float specularScale = 256;
-				double ambientLight = 0.2;//0.05
+				double ambientLight = 0.05;
 				double brightness;
 
-				auto shadowIntersect = getClosestIntersection(r, glm::normalize(lightDirection), models);
+				auto shadowIntersect = getClosestIntersection(r, glm::normalize(lightDirection), faces);
 				if (shadowIntersect.distanceFromCamera < glm::length(lightDirection)) {
 					brightness = ambientLight;
 				} else {
@@ -287,51 +357,59 @@ void drawRaytraced(DrawingWindow &window, glm::mat4 camera, float focalLength, f
 		}
 	}
 }
-//lookat
+
+glm::mat4 lookAt(glm::mat4 &camera, glm::vec3 target) {
+	glm::vec3 z = glm::normalize(glm::vec3(camera[3] / camera[3][3]) - target);
+	glm::vec3 x = glm::normalize(glm::cross(glm::vec3(0.0, 1.0, 0.0), z));
+	glm::vec3 y = glm::normalize(glm::cross(z, x));
+	return glm::mat4(
+		glm::vec4(x, 0.0),
+		glm::vec4(y, 0.0),
+		glm::vec4(z, 0.0),
+		glm::vec4(camera[3])
+	);
+}
+
 void update(DrawingWindow &window, glm::mat4 &camera) {
 	camera = lookAt(camera, glm::vec3(0, 0, 0));
 }
 
-void handleEvent(SDL_Event event, DrawingWindow &window, glm::mat4 &camera, int &renderMode) {
+void handleEvent(SDL_Event event, DrawingWindow &window, std::vector<float> &depthBuffer, TextureMap &texMap, glm::mat4 &camera, int &renderMode) {
 	if (event.type == SDL_KEYDOWN) {
-		if (event.key.keysym.sym == SDLK_w) camera = translationMatrix(glm::vec3(0.0, 0.0, -0.5)) * camera;
+		if (event.key.keysym.sym == SDLK_LEFT) std::cout << "LEFT" << std::endl;
+		else if (event.key.keysym.sym == SDLK_RIGHT) std::cout << "RIGHT" << std::endl;
+		else if (event.key.keysym.sym == SDLK_UP) std::cout << "UP" << std::endl;
+		else if (event.key.keysym.sym == SDLK_DOWN) std::cout << "DOWN" << std::endl;
+		else if (event.key.keysym.sym == SDLK_u) drawStrokedTriangle(window, depthBuffer, generateTriangle(window), Colour(rand()%256, rand()%256, rand()%256));
+		else if (event.key.keysym.sym == SDLK_f) drawFilledTriangle(window, depthBuffer, generateTriangle(window), Colour(rand()%256, rand()%256, rand()%256), true);
+		else if (event.key.keysym.sym == SDLK_t) drawTexturedTriangle(window, depthBuffer, generateTexturedTriangle(), texMap, true);
+		else if (event.key.keysym.sym == SDLK_w) camera = translationMatrix(glm::vec3(0.0, 0.0, -0.5)) * camera;
 		else if (event.key.keysym.sym == SDLK_s) camera = translationMatrix(glm::vec3(0.0, 0.0, 0.5)) * camera;
-		else if (event.key.keysym.sym == SDLK_z) camera = translationMatrix(glm::vec3(-0.5, 0.0, 0.0)) * camera;
-		else if (event.key.keysym.sym == SDLK_c) camera = translationMatrix(glm::vec3(0.5, 0.0, 0.0)) * camera;
+		else if (event.key.keysym.sym == SDLK_z) camera = translationMatrix(glm::vec3(0.5, 0.0, 0.0)) * camera;
+		else if (event.key.keysym.sym == SDLK_c) camera = translationMatrix(glm::vec3(-0.5, 0.0, 0.0)) * camera;
 		else if (event.key.keysym.sym == SDLK_q) camera = translationMatrix(glm::vec3(0.0, 0.5, 0.0)) * camera;
 		else if (event.key.keysym.sym == SDLK_e) camera = translationMatrix(glm::vec3(0.0, -0.5, 0.0)) * camera;
-		else if (event.key.keysym.sym == SDLK_a) camera = rotationMatrixY(-0.1) * camera;
-		else if (event.key.keysym.sym == SDLK_d) camera = rotationMatrixY(0.1) * camera;
+		else if (event.key.keysym.sym == SDLK_a) camera = rotationMatrixY(0.1) * camera;
+		else if (event.key.keysym.sym == SDLK_d) camera = rotationMatrixY(-0.1) * camera;
 		else if (event.key.keysym.sym == SDLK_r) camera = rotationMatrixX(-0.1) * camera;
 		else if (event.key.keysym.sym == SDLK_v) camera = rotationMatrixX(0.1) * camera;
 		else if (event.key.keysym.sym == SDLK_1) camera = rotationMatrixZ(0.1) * camera;
 		else if (event.key.keysym.sym == SDLK_3) camera = rotationMatrixZ(-0.1) * camera;
 		else if (event.key.keysym.sym == SDLK_l) camera = lookAt(camera, glm::vec3(0.0, 0.0, 0.0));
-        else if (event.key.keysym.sym == SDLK_b) {
-            renderMode = 0;
-            std::cout << "Switched to RENDERMODE 0" << std::endl;
-        }
-        else if (event.key.keysym.sym == SDLK_n) {
-            renderMode = 1;
-            std::cout << "Switched to RENDERMODE 1" << std::endl;
-        }
-        else if (event.key.keysym.sym == SDLK_m) {
-            renderMode = 2;
-            std::cout << "Switched to RENDERMODE 2" << std::endl;
-        }
+		else if (event.key.keysym.sym == SDLK_b) renderMode = 0;
+		else if (event.key.keysym.sym == SDLK_n) renderMode = 1;
+		else if (event.key.keysym.sym == SDLK_m) renderMode = 2;
 	} else if (event.type == SDL_MOUSEBUTTONDOWN) window.savePPM("output.ppm");
 }
 
 int main(int argc, char *argv[]) {
 	DrawingWindow window = DrawingWindow(WIDTH, HEIGHT, false);
+	TextureMap texMap = TextureMap("models/texture.ppm");
+	std::vector<float> depthBuffer = std::vector<float>(window.height * window.width, 0);
 	
-	std::vector<Model> models;
-	models.push_back(loadObjFile("models/textured-cornell-box.obj", 1.0));
-	//models.push_back(loadObjFile("models/sphere.obj", 1.0));
-	models.push_back(loadObjFile("models/logo.obj", 0.005));
-	models[1].position = glm::vec3(-0.5, 0.0, 0.0);
-	models[2].position = glm::vec3(-0.25, -1.0, 1.0);
+	float vertexScale = 1.0;
 
+	std::vector<ModelTriangle> faces = loadObjFile("models/textured-cornell-box.obj", vertexScale);
 	glm::vec3 lightSource(0.0, 1.5, 0.0);
 	glm::mat4 camera(
 		1.0, 0.0, 0.0, 0.0,
@@ -339,19 +417,17 @@ int main(int argc, char *argv[]) {
 		0.0, 0.0, 1.0, 0.0,
 		0.0, 0.0, 10.0, 1.0
 	);
-
 	float focalLength = 2.0;
 	float planeMultiplier = 250;
 	int renderMode = 1;
 
 	SDL_Event event;
-
 	while (true) {
 		if (window.pollForInputEvents(event)) {
-			handleEvent(event, window, camera, renderMode);
+			handleEvent(event, window, depthBuffer, texMap, camera, renderMode);
 			// update(window, camera);
-			if (renderMode == 2) drawRaytraced(window, camera, focalLength, planeMultiplier, models, lightSource);
-			else draw(window, renderMode, camera, focalLength, planeMultiplier, models);
+			if (renderMode == 2) drawRaytraced(window, camera, focalLength, planeMultiplier, faces, lightSource, texMap);
+			else draw(window, renderMode, camera, focalLength, planeMultiplier, faces, texMap);
 		}
 		window.renderFrame();
 	}

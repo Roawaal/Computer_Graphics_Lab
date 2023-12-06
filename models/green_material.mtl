@@ -1,0 +1,8 @@
+# Dark Green material
+newmtl greenMaterial
+Ka 0.000 0.250 0.000  # Ambient color (dark green)
+Kd 0.000 0.500 0.000  # Diffuse color (dark green)
+Ks 0.500 0.500 0.500  # Specular color (white for highlight)
+Ns 10.000            # Specular exponent (shininess)
+d 1.0                # Transparency (opaque)
+illum 2              # Illumination model (2 means specular highlights are turned on)
