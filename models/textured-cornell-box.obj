@@ -1,4 +1,4 @@
-mtllib textured-cornell-box.mtl
+mtllib models/textured-cornell-box.mtl
 
 o light
 usemtl White
@@ -92,7 +92,7 @@ f 38/ 39/ 40/
 f 42/ 43/ 44/
 
 o tall_box
-usemtl REFLECTIVE
+usemtl Blue
 v -1.449011 0.5597992 0.33377385
 v 0.130989 0.55940914 -0.15622616
 v -0.359011 0.55813503 -1.7562258
